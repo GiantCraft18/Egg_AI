@@ -131,7 +131,7 @@ class MainActivity : Activity() {
                 saveState(); updateUi()
             }
         }, 1f)
-        row1.addView(actionButton("⚡ Тренировка", Color.rgb(93, 91, 230)) {
+        row1.addView(actionButton("⚡ Тренировка", Color.rgb(93, 91, 230)1f) {
             if (energy < 15) {
                 toast("Питомец устал. Дай ему ягодку 🍓")
             } else {
@@ -145,13 +145,13 @@ class MainActivity : Activity() {
         page.addView(row1, LinearLayout.LayoutParams(-1, dp(52)).apply { bottomMargin = dp(8) })
 
         val row2 = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-        row2.addView(actionButton("🌙 Отдых", Color.rgb(54, 151, 166)) {
+        row2.addView(actionButton("🌙 Отдых", Color.rgb(54, 151, 166)1f) {
             energy = (energy + 30).coerceAtMost(100)
             happiness = (happiness + 3).coerceAtMost(100)
             toast("Пика отдохнул и восстановил силы.")
             saveState(); updateUi()
         }, 1f)
-        row2.addView(actionButton("🛒 Купить ягоды", Color.rgb(187, 124, 48)) {
+        row2.addView(actionButton("🛒 Купить ягоды", Color.rgb(187, 124, 48)1f) {
             if (sparks >= 10) {
                 sparks -= 10
                 berries += 3
