@@ -1,1 +1,17 @@
-
+workflows:
+  android-apk:
+    name: EggAI Android APK
+    max_build_duration: 60
+    environment:
+      java: 17
+    scripts:
+      - name: Build debug APK
+        script: |
+          if [ ! -f gradlew ]; then
+            echo "ERROR: gradlew is missing from the repository root"
+            exit 1
+          fi
+          chmod +x gradlew
+          ./gradlew assembleDebug
+    artifacts:
+      - app/build/outputs/apk/debug/*.apk
