@@ -118,7 +118,7 @@ class MainActivity : Activity() {
         page.addView(mood, matchWrap())
 
         val row1 = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-        row1.addView(actionButton("🍓 Покормить", Color.rgb(225, 76, 127)) {
+        row1.addView(actionButton("🍓 Покормить", Color.rgb(225, 76, 127)1f) {
             if (berries <= 0) {
                 toast("Ягоды закончились. Собери искры и купи ещё!")
             } else if (happiness >= 100 && energy >= 100) {
