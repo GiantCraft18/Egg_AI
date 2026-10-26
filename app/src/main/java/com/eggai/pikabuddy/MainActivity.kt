@@ -7,10 +7,10 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
+import android.graphics.RadialGradient
 import android.graphics.RectF
 import android.graphics.Shader
 import android.graphics.Typeface
-import android.graphics.RadialGradient
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.Gravity
@@ -34,6 +34,7 @@ class MainActivity : Activity() {
     private var happiness = 70
     private var level = 1
     private var taps = 0
+
     private val petName = "Пика"
 
     private val prefs by lazy {
@@ -65,7 +66,10 @@ class MainActivity : Activity() {
             text = "EggAI"
             textSize = 30f
             setTextColor(Color.WHITE)
-            typeface = Typeface.create("sans-serif-black", Typeface.BOLD)
+            typeface = Typeface.create(
+                "sans-serif-black",
+                Typeface.BOLD
+            )
             gravity = Gravity.CENTER
         }
         page.addView(title, matchWrap())
@@ -102,7 +106,14 @@ class MainActivity : Activity() {
 
         statCard.addView(stats, matchWrap())
         statCard.addView(sparkText, matchWrap())
-        page.addView(statCard, LinearLayout.LayoutParams(-1, dp(76)))
+
+        page.addView(
+            statCard,
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                dp(76)
+            )
+        )
 
         petView = PetView(this) {
             taps++
@@ -112,7 +123,7 @@ class MainActivity : Activity() {
 
             if (taps % 12 == 0) {
                 level++
-                toast("Уровень повышен! Теперь уровень $level 🎉")
+                toast("Новый уровень: $level! 🎉")
             }
 
             saveState()
@@ -121,7 +132,11 @@ class MainActivity : Activity() {
 
         page.addView(
             petView,
-            LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f).apply {
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                0,
+                1f
+            ).apply {
                 topMargin = dp(6)
                 bottomMargin = dp(4)
             }
@@ -135,46 +150,49 @@ class MainActivity : Activity() {
         }
         page.addView(mood, matchWrap())
 
+        // Первый ряд кнопок
         val row1 = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
         }
 
         row1.addView(
-            actionButton("🍓 Покормить", Color.rgb(225, 76, 127)) {
+            actionButton(
+                "🍓 Покормить",
+                Color.rgb(225, 76, 127)
+            ) {
                 if (berries <= 0) {
-                    toast("Ягоды закончились. Собери искры и купи ещё!")
+                    toast("Ягоды закончились. Купи ещё!")
                 } else if (happiness >= 100 && energy >= 100) {
-                    toast("Питомец уже сыт и полон энергии!")
+                    toast("Пика уже сыт и полон энергии!")
                 } else {
                     berries--
                     happiness = (happiness + 18).coerceAtMost(100)
                     energy = (energy + 12).coerceAtMost(100)
-                    toast("Ням! Пика счастливее ❤️")
+                    toast("Пика доволен! ❤️")
                     saveState()
                     updateUi()
                 }
             },
-            LinearLayout.LayoutParams(0, dp(52), 1f).apply {
-                marginEnd = dp(5)
-            }
+            buttonParams(endMargin = 5)
         )
 
         row1.addView(
-            actionButton("⚡ Тренировка", Color.rgb(93, 91, 230)) {
+            actionButton(
+                "⚡ Тренировка",
+                Color.rgb(93, 91, 230)
+            ) {
                 if (energy < 15) {
-                    toast("Питомец устал. Дай ему ягодку 🍓")
+                    toast("Пика устал. Пора отдохнуть!")
                 } else {
                     energy -= 15
                     sparks += 8 + level
                     happiness = (happiness + 5).coerceAtMost(100)
-                    toast("Тренировка завершена: +${8 + level} искр!")
+                    toast("Получено ${8 + level} искр!")
                     saveState()
                     updateUi()
                 }
             },
-            LinearLayout.LayoutParams(0, dp(52), 1f).apply {
-                marginStart = dp(5)
-            }
+            buttonParams(startMargin = 5)
         )
 
         page.addView(
@@ -187,38 +205,41 @@ class MainActivity : Activity() {
             }
         )
 
+        // Второй ряд кнопок
         val row2 = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
         }
 
         row2.addView(
-            actionButton("🌙 Отдых", Color.rgb(54, 151, 166)) {
+            actionButton(
+                "🌙 Отдых",
+                Color.rgb(54, 151, 166)
+            ) {
                 energy = (energy + 30).coerceAtMost(100)
                 happiness = (happiness + 3).coerceAtMost(100)
-                toast("Пика отдохнул и восстановил силы.")
+                toast("Пика восстановил силы!")
                 saveState()
                 updateUi()
             },
-            LinearLayout.LayoutParams(0, dp(52), 1f).apply {
-                marginEnd = dp(5)
-            }
+            buttonParams(endMargin = 5)
         )
 
         row2.addView(
-            actionButton("🛒 Купить ягоды", Color.rgb(187, 124, 48)) {
+            actionButton(
+                "🛒 Купить ягоды",
+                Color.rgb(187, 124, 48)
+            ) {
                 if (sparks >= 10) {
                     sparks -= 10
                     berries += 3
-                    toast("Куплено 3 ягоды за 10 искр.")
+                    toast("Куплено 3 ягоды!")
                     saveState()
                     updateUi()
                 } else {
                     toast("Нужно 10 искр. Нажимай на питомца!")
                 }
             },
-            LinearLayout.LayoutParams(0, dp(52), 1f).apply {
-                marginStart = dp(5)
-            }
+            buttonParams(startMargin = 5)
         )
 
         page.addView(
@@ -243,12 +264,17 @@ class MainActivity : Activity() {
 
     private fun updateUi() {
         stats.text = "⭐ Уровень $level    ❤️ $happiness%    🔋 $energy%"
-        sparkText.text = "⚡ Искры: $sparks       🍓 Ягоды: $berries"
+        sparkText.text = "⚡ Искры: $sparks    🍓 Ягоды: $berries"
 
         mood.text = when {
-            happiness >= 80 -> "$petName счастлив! Продолжай в том же духе 💛"
-            happiness >= 45 -> "$petName доволен. Поиграй с ним!"
-            else -> "$petName грустит — пора покормить его 🍓"
+            happiness >= 80 ->
+                "$petName счастлив! 💛"
+
+            happiness >= 45 ->
+                "$petName доволен. Поиграй с ним!"
+
+            else ->
+                "$petName грустит — покорми его 🍓"
         }
 
         petView.invalidate()
@@ -285,11 +311,30 @@ class MainActivity : Activity() {
             isAllCaps = false
             setTextColor(Color.WHITE)
             background = rounded(color, 16)
-            setOnClickListener { action() }
+            setOnClickListener {
+                action()
+            }
         }
     }
 
-    private fun rounded(color: Int, radiusDp: Int): GradientDrawable {
+    private fun buttonParams(
+        startMargin: Int = 0,
+        endMargin: Int = 0
+    ): LinearLayout.LayoutParams {
+        return LinearLayout.LayoutParams(
+            0,
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            1f
+        ).apply {
+            marginStart = dp(startMargin)
+            marginEnd = dp(endMargin)
+        }
+    }
+
+    private fun rounded(
+        color: Int,
+        radiusDp: Int
+    ): GradientDrawable {
         return GradientDrawable().apply {
             setColor(color)
             cornerRadius = dp(radiusDp).toFloat()
@@ -304,16 +349,24 @@ class MainActivity : Activity() {
     }
 
     private fun dp(value: Int): Int {
-        return (value * resources.displayMetrics.density).toInt()
+        return (
+            value * resources.displayMetrics.density
+        ).toInt()
     }
 
     private fun toast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            this,
+            message,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     override fun onPause() {
         super.onPause()
-        if (::stats.isInitialized) saveState()
+        if (::stats.isInitialized) {
+            saveState()
+        }
     }
 }
 
@@ -325,8 +378,12 @@ private class PetView(
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     init {
-        setOnClickListener { onPetTap() }
-        contentDescription = "Жёлтый электрический питомец. Нажми, чтобы получить искры."
+        setOnClickListener {
+            onPetTap()
+        }
+
+        contentDescription =
+            "Жёлтый электрический питомец. Нажми, чтобы получить искры."
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -338,8 +395,11 @@ private class PetView(
         val cy = h * 0.53f
         val scale = min(w / 330f, h / 390f).coerceAtMost(1.1f)
 
+        // Светящийся фон
         paint.shader = RadialGradient(
-            cx, cy, 145f * scale,
+            cx,
+            cy,
+            145f * scale,
             intArrayOf(
                 Color.argb(100, 110, 92, 255),
                 Color.argb(0, 110, 92, 255)
@@ -350,6 +410,7 @@ private class PetView(
         canvas.drawCircle(cx, cy, 145f * scale, paint)
         paint.shader = null
 
+        // Тень
         paint.color = Color.argb(70, 0, 0, 0)
         canvas.drawOval(
             RectF(
@@ -361,8 +422,7 @@ private class PetView(
             paint
         )
 
-        // Lightning tail
-        paint.color = Color.rgb(255, 205, 57)
+        // Молниевидный хвост
         val tail = Path().apply {
             moveTo(cx + 62 * scale, cy + 26 * scale)
             lineTo(cx + 108 * scale, cy + 7 * scale)
@@ -373,15 +433,17 @@ private class PetView(
             lineTo(cx + 60 * scale, cy + 51 * scale)
             close()
         }
+
+        paint.color = Color.rgb(255, 205, 57)
         canvas.drawPath(tail, paint)
 
         paint.color = Color.rgb(151, 94, 35)
         paint.style = Paint.Style.STROKE
-        paint.strokeWidth = 4f * scale
+        paint.strokeWidth = 3f * scale
         canvas.drawPath(tail, paint)
         paint.style = Paint.Style.FILL
 
-        // Ears
+        // Уши
         paint.color = Color.rgb(255, 210, 59)
 
         val leftEar = Path().apply {
@@ -419,7 +481,7 @@ private class PetView(
             paint
         )
 
-        // Body
+        // Тело
         paint.color = Color.rgb(255, 218, 75)
         canvas.drawOval(
             RectF(
@@ -429,7 +491,7 @@ private class PetView(
             paint
         )
 
-        // Belly
+        // Живот
         paint.color = Color.rgb(255, 235, 135)
         canvas.drawOval(
             RectF(
@@ -439,7 +501,7 @@ private class PetView(
             paint
         )
 
-        // Arms
+        // Руки
         paint.color = Color.rgb(255, 218, 75)
         canvas.drawOval(
             RectF(
@@ -456,7 +518,7 @@ private class PetView(
             paint
         )
 
-        // Feet
+        // Ноги
         paint.color = Color.rgb(214, 151, 49)
         canvas.drawOval(
             RectF(
@@ -473,12 +535,12 @@ private class PetView(
             paint
         )
 
-        // Cheeks
+        // Щёки
         paint.color = Color.rgb(247, 82, 91)
-        canvas.drawCircle(cx - 49 * scale, cy + 1 * scale, 15 * scale, paint)
-        canvas.drawCircle(cx + 49 * scale, cy + 1 * scale, 15 * scale, paint)
+        canvas.drawCircle(cx - 49 * scale, cy + scale, 15 * scale, paint)
+        canvas.drawCircle(cx + 49 * scale, cy + scale, 15 * scale, paint)
 
-        // Eyes
+        // Глаза
         paint.color = Color.rgb(45, 39, 53)
         canvas.drawOval(
             RectF(
@@ -499,7 +561,7 @@ private class PetView(
         canvas.drawCircle(cx - 28 * scale, cy - 24 * scale, 3.5f * scale, paint)
         canvas.drawCircle(cx + 30 * scale, cy - 24 * scale, 3.5f * scale, paint)
 
-        // Smile
+        // Улыбка
         paint.color = Color.rgb(99, 58, 43)
         paint.style = Paint.Style.STROKE
         paint.strokeWidth = 3f * scale
@@ -513,7 +575,7 @@ private class PetView(
         canvas.drawPath(smile, paint)
         paint.style = Paint.Style.FILL
 
-        // Sparkles
+        // Искры
         paint.color = Color.rgb(255, 240, 128)
         drawSpark(canvas, cx - 110 * scale, cy - 50 * scale, 9 * scale)
         drawSpark(canvas, cx + 112 * scale, cy - 63 * scale, 7 * scale)
@@ -521,12 +583,25 @@ private class PetView(
 
         paint.color = Color.WHITE
         paint.textAlign = Paint.Align.CENTER
-        paint.typeface = Typeface.create("sans-serif-medium", Typeface.BOLD)
+        paint.typeface = Typeface.create(
+            "sans-serif-medium",
+            Typeface.BOLD
+        )
         paint.textSize = 15f * scale
-        canvas.drawText("НАЖМИ НА МЕНЯ!", cx, h - 14f * scale, paint)
+        canvas.drawText(
+            "НАЖМИ НА МЕНЯ!",
+            cx,
+            h - 14f * scale,
+            paint
+        )
     }
 
-    private fun drawSpark(canvas: Canvas, x: Float, y: Float, r: Float) {
+    private fun drawSpark(
+        canvas: Canvas,
+        x: Float,
+        y: Float,
+        r: Float
+    ) {
         val path = Path().apply {
             moveTo(x, y - r)
             lineTo(x + r * 0.25f, y - r * 0.25f)
@@ -538,6 +613,7 @@ private class PetView(
             lineTo(x - r * 0.25f, y - r * 0.25f)
             close()
         }
+
         canvas.drawPath(path, paint)
     }
 }
